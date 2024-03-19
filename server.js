@@ -142,7 +142,7 @@ app.post('/preferences', (req, res) => {
 
 // 중복 사용자 확인 함수
 async function checkDuplicateUser(username, email) {
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    const existingUser = await User.findOne({ $and: [{ username }, { email }] });
     return existingUser !== null;
 }
 
