@@ -11,9 +11,7 @@ const querystring = require('querystring');
 const app = express();
 const PORT = process.env.PORT || 3000;
 // MongoDB 연결
-const mongoConnect = async () => {
-    await mongoose.connect('mongodb+srv://kyk000306:Smsksm4587@foodtraveldb.un6m56g.mongodb.net/?retryWrites=true&w=majority&appName=FoodTravelDB', { useNewUrlParser: true, useUnifiedTopology: true });
-}
+mongoose.connect('mongodb+srv://kyk000306:Smsksm4587@foodtraveldb.un6m56g.mongodb.net/?retryWrites=true&w=majority&appName=FoodTravelDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // 미들웨어 설정
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -65,7 +63,7 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     const isExisitngUser = await checkDuplicateUser(username);
-    const isExisitngEmail = await checkDuplicateUser(email);
+    const isExisitngEmail = await checkDuplicateEmail(email);
     if (isExisitngUser && isExisitngEmail) {
         res.status(400).send('duplicatedUsername');
     }
@@ -89,7 +87,7 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, email, password } = req.body;
     const isExisitngUser = await checkDuplicateUser(username);
-    const isExisitngEmail = await checkDuplicateUser(email);
+    const isExisitngEmail = await checkDuplicateEmail(email);
     const isExistingPassword = await checkPassword(username, password);
 
     if (isExisitngUser && isExisitngEmail) {
@@ -104,7 +102,7 @@ app.post('/login', async (req, res) => {
         } else {
             res.status(400).send('loginFalse');
         }
-    } else {
+    }else {
         res.status(400).send('loginFalse');
     }
 });
@@ -143,17 +141,16 @@ app.post('/preferences', (req, res) => {
 });
 
 // 중복 사용자 확인 함수
-async function checkDuplicateUser(username, email) {
-    const existingUser = await User.findOne({ username });
-    return existingUser !== null;
+async function checkDuplicateUser(username) {
+    const isExistingUser = await User.findOne({ username });
+    return isExistingUser !== null;
 }
 
-// 중복 이메일 확인 함수
+// 중복 사용자 확인 함수
 async function checkDuplicateEmail(email) {
-    const existingEmail = await User.findOne({ email });
-    return existingEmail !== null;
+    const isExistingEmail = await User.findOne({ email });
+    return isExistingEmail !== null;
 }
-
 
 // 비밀번호 확인 함수
 async function checkPassword(usernameOrEmail, password) {
