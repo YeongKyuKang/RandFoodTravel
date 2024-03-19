@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한식 맛집 추천</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 400px;
+            /* 지도의 높이 설정 */
+        }
+
+        #restaurants {
+            margin-top: 20px;
+        }
+
+        .restaurant {
+            margin-bottom: 20px;
+        }
+
+        .restaurant img {
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>한식 맛집 추천</h1>
+    <div id="map"></div>
+
+    <div id="restaurants">
+        <h2>추천 맛집</h2>
+        <div id="restaurantList"></div>
+    </div>
+
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6xu9y2eg88"></script>  <script>
+        let mapDiv = document.getElementById('map');
+        let map = new naver.maps.Map(mapDiv, {
+            zoom: 15 // 맵을 500m 정도로 줌인
+        });
+
+        // 사용자 위치를 서버로 보내고 맛집을 검색하는 함수
+        function sendUserLocationAndSearchRestaurants() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        const userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+
+                        // 서버로 사용자 위치를 보냄
+                        fetch('/userLocation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(userLocation)
+                        })
+                            .then(response => response.text())
+                            .then(message => {
+                                console.log(message);
+                                // 사용자 위치를 성공적으로 보냈으면 맛집 검색 요청
+                                fetch('/searchRestaurants', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data && data.places) {
+                                            let restaurantListDiv = document.getElementById('restaurantList');
+                                            let restaurants = data.places;
+
+                                            for (let i = 0; i < restaurants.length; i++) {
+                                                let restaurant = restaurants[i];
+                                                let restaurantDiv = document.createElement('div');
+                                                restaurantDiv.className = 'restaurant';
+                                                restaurantDiv.innerHTML = `
+                                                <img src="${restaurant.image}" alt="${restaurant.name}">
+                                                <h3>${restaurant.name}</h3>
+                                                <p>${restaurant.address}</p>
+                                                `;
+                                                restaurantListDiv.appendChild(restaurantDiv);
+                                            }
+                                        } else {
+                                            console.error('Error: Invalid data format');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching restaurants:', error);
+                                    });
+                            })
+                            .catch(error => {
+                                console.error('Error sending user location:', error);
+                            });
+                    },
+                    function (error) {
+                        alert('사용자의 위치를 찾을 수 없습니다.');
+                    }
+                );
+            } else {
+                alert('브라우저가 위치 서비스를 지원하지 않습니다.');
+            }
+        }
+
+        // 사용자 위치를 서버로 보내고 맛집 검색 시작
+        sendUserLocationAndSearchRestaurants();
+    </script>
+</body>
+
+</html>

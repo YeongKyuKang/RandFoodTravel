@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        #loginButton {
+            margin-top: 10px;
+            background-color: #dc3545;
+        }
+
+        #loginButton:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>회원가입</h2>
+        <form id="signupForm" action="/signup" method="POST">
+            <label for="username">사용자명:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">이메일:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required>
+            <div class="error" id="errorMessage"></div>
+            <button type="submit">가입하기</button>
+        </form>
+        <div class="error" id="errorMessage"></div>
+        <button id="loginButton" onclick="location.href='/login'">이미 회원이신가요? 로그인하기</button>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        signupForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (!response.ok) {
+                    const errorMessageText = await response.text();
+                    if (errorMessageText === 'duplicatedUsername') {
+                        window.location.href = '/duplicatedUsername';
+                    } else {
+                        window.location.href = '/loginFalse';
+                    }
+                    return;
+                }
+
+                window.location.href = '/preferences';
+            } catch (error) {
+                console.error('회원가입 중 에러 발생:', error);
+                errorMessage.textContent = '회원가입 중 에러가 발생했습니다.';
+            }
+        });
+    </script>
+</body>
+
+</html>

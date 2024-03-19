@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>양식네이버 지도 표시</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 400px; /* 지도의 높이 설정 */
+        }
+    </style>
+</head>
+<body>
+    <h1>네이버 지도 표시</h1>
+    <div id="map"></div>
+
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
+    <script>
+        // 지도를 표시할 div 요소
+        var mapDiv = document.getElementById('map');
+
+        // 지도 생성
+        var map = new naver.maps.Map(mapDiv, {
+            center: new naver.maps.LatLng(37.5665, 126.9780), // 서울의 좌표
+            zoom: 10 // 확대 수준
+        });
+
+        // 마커 생성
+        var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(37.5665, 126.9780), // 마커 위치 설정 (서울의 좌표)
+            map: map // 마커를 표시할 지도 객체
+        });
+    </script>
+</body>
+</html>
