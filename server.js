@@ -11,7 +11,9 @@ const querystring = require('querystring');
 const app = express();
 const PORT = process.env.PORT || 3000;
 // MongoDB 연결
-mongoose.connect('mongodb+srv://kyk000306:Smsksm4587@foodtraveldb.un6m56g.mongodb.net/?retryWrites=true&w=majority&appName=FoodTravelDB', { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoConnect = async()=>{
+    await mongoose.connect('mongodb+srv://kyk000306:Smsksm4587@foodtraveldb.un6m56g.mongodb.net/?retryWrites=true&w=majority&appName=FoodTravelDB', { useNewUrlParser: true, useUnifiedTopology: true });
+}
 
 // 미들웨어 설정
 app.use(bodyParser.urlencoded({ extended: true }));
