@@ -102,7 +102,7 @@ app.post('/login', async (req, res) => {
         } else {
             res.status(400).send('loginFalse');
         }
-    }else {
+    } else {
         res.status(400).send('loginFalse');
     }
 });
@@ -230,36 +230,40 @@ app.post('/userLocation', (req, res) => {
 // 음식 선호도에 따른 맛집 검색 라우트
 app.post('/searchRestaurants', async (req, res) => {
     try {
-        const position = req.session.userLocation;
-        const foodPreference = req.session.foodPreference;
-        if (!position) {
+        const { latitude, longitude, foodPreference } = req.body;
+        // 사용자 위치가 없으면 에러 응답
+        if (!latitude && !longitude) {
             return res.status(400).json({ error: 'User location not found' });
         }
-        const result = await searchRestaurants(position, foodPreference);
+
+        const result = await searchRestaurants(latitude, longitude, foodPreference);
         res.json(result);
     } catch (error) {
         console.error('Error searching restaurants:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// 음식 종류에 따른 맛집 검색 함수
-async function searchRestaurants(position, foodPreference) {
+async function searchRestaurants(latitude, longitude, foodPreference) {
     try {
+        console.log(latitude, longitude);
+        // 좌표를 주소로 변환
+        const address = await reverseGeocoding(latitude, longitude);
+        console.log(address);
         const queryParams = {
-            query: foodPreference,
+            query: foodPreference + ' ' + address, // 주소와 음식 종류를 함께 검색
             display: 5, // 가져올 음식점 개수
             start: 1,
-            sort: 'random',
-            ...position // 사용자 위치 정보
+            sort: 'comment'
         };
         const queryString = querystring.stringify(queryParams);
 
         const response = await axios.get('https://openapi.naver.com/v1/search/local.json?' + queryString, {
             headers: {
-                'X-NCP-APIGW-API-KEY-ID': '6xu9y2eg88', // 네이버 API 키
-                'X-NCP-APIGW-API-KEY': '44FKOOgbXHMB21040XSyz09iTldeOJLjAfN8VDWd' // 네이버 API 시크릿 키
+                'X-Naver-Client-Id': 'pj0FaM2XLnRFtWbx7M3u', // 네이버 API 키
+                'X-Naver-Client-Secret': 'aQp9GhMRWe' // 네이버 API 시크릿 키
             }
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error searching restaurants:', error);
@@ -267,8 +271,29 @@ async function searchRestaurants(position, foodPreference) {
     }
 }
 
+async function reverseGeocoding(latitude, longitude) {
+    const coords = `${longitude},${latitude}`; // 경도와 위도 순서 변경하여 좌표 문자열 생성
+    const sourcecrs = 'epsg:4326'; // 입력 좌표계 (일반적으로 WGS84 좌표계인 epsg:4326 사용)
+    const orders = 'roadaddr'; // 변환 작업 이름 (주소로 변환)
+    const output = 'json'; // 출력 형식 (JSON 형식)
+    const apiUrl = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${coords}&sourcecrs=${sourcecrs}&orders=${orders}&output=${output}`;
+    try {
 
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'X-NCP-APIGW-API-KEY-ID': '6xu9y2eg88',
+                'X-NCP-APIGW-API-KEY': '44FKOOgbXHMB21040XSyz09iTldeOJLjAfN8VDWd'
+            }
+        });
 
+        // API 응답 데이터 반환
+        return response.data.results[0].region.area1.name + ' ' +
+            response.data.results[0].region.area2.name + ' ' +
+            response.data.results[0].region.area3.name;
+    } catch (error) {
+        console.error('Error reverse geocoding:', error);
+    }
+}
 
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
