@@ -245,32 +245,55 @@ app.post('/searchRestaurants', async (req, res) => {
 });
 async function searchRestaurants(latitude, longitude, foodPreference) {
     try {
-        console.log(latitude, longitude);
-        // 좌표를 주소로 변환
         const address = await reverseGeocoding(latitude, longitude);
-        console.log(address);
+        const selectedRestaurants = [];
+        const selectedIndices = new Set();
+
         const queryParams = {
-            query: foodPreference + ' ' + address, // 주소와 음식 종류를 함께 검색
-            display: 5, // 가져올 음식점 개수
-            start: 1,
-            sort: 'comment'
+            query: address + ' ' + foodPreference,
+            display: 5,
+            start: 1, 
+            sort: 'random'
         };
         const queryString = querystring.stringify(queryParams);
 
         const response = await axios.get('https://openapi.naver.com/v1/search/local.json?' + queryString, {
             headers: {
-                'X-Naver-Client-Id': 'pj0FaM2XLnRFtWbx7M3u', // 네이버 API 키
-                'X-Naver-Client-Secret': 'aQp9GhMRWe' // 네이버 API 시크릿 키
+                'X-Naver-Client-Id': 'pj0FaM2XLnRFtWbx7M3u',
+                'X-Naver-Client-Secret': 'aQp9GhMRWe'
             }
         });
-        console.log(response.data);
-        return response.data;
+        console.log(response.data.items);
+
+        // 중복 선택된 음식점을 피하고 선택된 음식점을 추가
+        response.data.items.forEach((restaurant, index) => {
+            // 중복 검사를 수행하여 중복된 음식점을 걸러냄
+            const key = restaurant.title + restaurant.roadAddress;
+            if (!selectedIndices.has(key)) {
+                selectedRestaurants.push(restaurant);
+                selectedIndices.add(key);
+            }
+        });
+
+        // 결과에서 5개의 음식점을 랜덤하게 선택
+        const totalResults = selectedRestaurants.length;
+        const maxIndex = Math.min(totalResults, 5);
+        const finalSelection = [];
+
+        // 중복되지 않는 랜덤한 인덱스를 선택
+        while (finalSelection.length < maxIndex) {
+            const randomIndex = Math.floor(Math.random() * totalResults);
+            if (!finalSelection.includes(randomIndex)) {
+                finalSelection.push(randomIndex);
+            }
+        }
+
+        return finalSelection.map(index => selectedRestaurants[index]);
     } catch (error) {
         console.error('Error searching restaurants:', error);
         throw error;
     }
 }
-
 async function reverseGeocoding(latitude, longitude) {
     const coords = `${longitude},${latitude}`;
     const apiUrl = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${coords}&sourcecrs=epsg:4326&output=json&orders=legalcode`;

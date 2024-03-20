@@ -98,6 +98,20 @@
                 });
         }
 
+        // 페이지 로드 시 사용자 위치를 받아오고 주변 음식점 검색 시작
+        getUserLocationAndSearchRestaurants();
+
+        // 서버로부터 받아온 음식점 정보를 페이지에 표시하는 함수
+        function displayRestaurants(restaurants) {
+            const restaurantList = document.getElementById('restaurantList');
+
+            restaurants.forEach(restaurant => {
+                const li = document.createElement('li');
+                li.textContent = restaurant.title; // 음식점 이름만을 표시
+                console.log(restaurant.title);
+                restaurantList.appendChild(li);
+            });
+        }
         // 주변 음식점을 검색하여 화면에 표시하는 함수
         function searchRestaurants(latitude, longitude) {
             // 음식점 검색 API 호출
@@ -106,28 +120,15 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({latitude, longitude, foodPreference: '한식' })
+                body: JSON.stringify({ latitude, longitude, foodPreference: '한식' })
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // 받은 데이터를 콘솔에 출력
-                    if (data && data.places) {
-                        let restaurantListDiv = document.getElementById('restaurantList');
-                        let restaurants = data.places;
-
-                        for (let i = 0; i < restaurants.length; i++) {
-                            let restaurant = restaurants[i];
-                            let restaurantDiv = document.createElement('div');
-                            restaurantDiv.className = 'restaurant';
-                            restaurantDiv.innerHTML = `
-                            <img src="${restaurant.image}" alt="${restaurant.name}">
-                            <h3>${restaurant.name}</h3>
-                            <p>${restaurant.address}</p>
-                        `;
-                            restaurantListDiv.appendChild(restaurantDiv);
-                        }
+                    if (data && data.length > 0) {
+                        displayRestaurants(data); // 받은 데이터를 화면에 표시
                     } else {
-                        console.error('Error: Invalid data format');
+                        console.error('Error: No restaurants found');
                     }
                 })
                 .catch(error => {
@@ -135,8 +136,6 @@
                 });
         }
 
-        // 페이지 로드 시 사용자 위치를 받아오고 주변 음식점 검색 시작
-        getUserLocationAndSearchRestaurants();
 
     </script>
 </body>
