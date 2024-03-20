@@ -272,29 +272,33 @@ async function searchRestaurants(latitude, longitude, foodPreference) {
 }
 
 async function reverseGeocoding(latitude, longitude) {
-    console.log(latitude,longitude);
-    const coords = `${longitude},${latitude}`; // 경도와 위도 순서 변경하여 좌표 문자열 생성
-    const sourcecrs = 'epsg:4326'; // 입력 좌표계 (일반적으로 WGS84 좌표계인 epsg:4326 사용)
-    const orders = 'roadaddr'; // 변환 작업 이름 (주소로 변환)
-    const output = 'json'; // 출력 형식 (JSON 형식)
+    const coords = `${longitude},${latitude}`;
+    const sourcecrs = 'epsg:4326';
+    const orders = 'roadaddr';
+    const output = 'json';
     const apiUrl = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${coords}&sourcecrs=${sourcecrs}&orders=${orders}&output=${output}`;
-    try {
 
+    try {
         const response = await axios.get(apiUrl, {
             headers: {
                 'X-NCP-APIGW-API-KEY-ID': '6xu9y2eg88',
                 'X-NCP-APIGW-API-KEY': '44FKOOgbXHMB21040XSyz09iTldeOJLjAfN8VDWd'
             }
         });
-        console.log(response.data.results[0].region.area1.name + ' ' +
-        response.data.results[0].region.area2.name + ' ' +
-        response.data.results[0].region.area3.name);
-        // API 응답 데이터 반환
-        return response.data.results[0].region.area1.name + ' ' +
-            response.data.results[0].region.area2.name + ' ' +
-            response.data.results[0].region.area3.name;
+
+        // API 응답 데이터 확인
+        console.log('API response:', response.data);
+
+        // 정상적으로 주소를 가져왔을 때 반환
+        if (response.data.results && response.data.results.length > 0) {
+            return `${response.data.results[0].region.area1.name} ${response.data.results[0].region.area2.name} ${response.data.results[0].region.area3.name}`;
+        } else {
+            console.error('No address found in API response');
+            throw new Error('No address found in API response');
+        }
     } catch (error) {
         console.error('Error reverse geocoding:', error);
+        throw error;
     }
 }
 
