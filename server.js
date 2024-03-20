@@ -286,7 +286,9 @@ async function reverseGeocoding(latitude, longitude) {
                 'X-NCP-APIGW-API-KEY': '44FKOOgbXHMB21040XSyz09iTldeOJLjAfN8VDWd'
             }
         });
-
+        console.log(response.data.results[0].region.area1.name + ' ' +
+        response.data.results[0].region.area2.name + ' ' +
+        response.data.results[0].region.area3.name);
         // API 응답 데이터 반환
         return response.data.results[0].region.area1.name + ' ' +
             response.data.results[0].region.area2.name + ' ' +
