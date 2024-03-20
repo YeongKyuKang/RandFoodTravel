@@ -272,6 +272,7 @@ async function searchRestaurants(latitude, longitude, foodPreference) {
 }
 
 async function reverseGeocoding(latitude, longitude) {
+    console.log(latitude,longitude);
     const coords = `${longitude},${latitude}`; // 경도와 위도 순서 변경하여 좌표 문자열 생성
     const sourcecrs = 'epsg:4326'; // 입력 좌표계 (일반적으로 WGS84 좌표계인 epsg:4326 사용)
     const orders = 'roadaddr'; // 변환 작업 이름 (주소로 변환)
