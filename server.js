@@ -273,10 +273,7 @@ async function searchRestaurants(latitude, longitude, foodPreference) {
 
 async function reverseGeocoding(latitude, longitude) {
     const coords = `${longitude},${latitude}`;
-    const sourcecrs = 'epsg:4326';
-    const orders = 'roadaddr';
-    const output = 'json';
-    const apiUrl = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${coords}&sourcecrs=${sourcecrs}&orders=${orders}&output=${output}`;
+    const apiUrl = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${coords}&sourcecrs=epsg:4326&output=json&orders=legalcode`;
 
     try {
         const response = await axios.get(apiUrl, {
