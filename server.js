@@ -13,9 +13,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 // MongoDB 연결
-const mongoURI = process.env.mongodbURI;
-console.log(mongoURI);
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongodbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB에 연결되었습니다.'))
     .catch(err => console.error('MongoDB 연결 오류:', err));
 
