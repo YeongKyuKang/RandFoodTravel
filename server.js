@@ -1,3 +1,4 @@
+require('dotenv').config(); // dotenv 패키지를 사용하여 .env 파일 로드
 const express = require('express');
 const cors = require('cors'); // cors 모듈 추가
 const bodyParser = require('body-parser');
