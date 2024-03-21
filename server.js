@@ -8,11 +8,15 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const axios = require('axios');
 const querystring = require('querystring');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 // MongoDB 연결
-mongoose.connect('mongodb+srv://kyk000306:Smsksm4587@foodtraveldb.un6m56g.mongodb.net/?retryWrites=true&w=majority&appName=FoodTravelDB', { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoURI = process.env.mongodbURI;
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB에 연결되었습니다.'))
+    .catch(err => console.error('MongoDB 연결 오류:', err));
 
 // 미들웨어 설정
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +41,12 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+//환경변수
+const clientId = process.env.clientId;
+const clientSecret = process.env.clientSecret;
+const APIKey = process.env.APIKey;
+const APIKeySecret = process.env.APIKeySecret;
+
 // 세션을 확인하여 로그인되지 않은 사용자에게 /invalidAccess로 리디렉션
 function isLoggedIn(req, res, next) {
     if (req.cookies.user && req.session.user) {
@@ -55,6 +65,10 @@ app.get('/', (req, res) => {
     }
 });
 
+app.get('/env',(req,res)=>{
+    console.log(APIKey);
+    res.json({ ncpClientId: APIKey });
+})
 // 회원가입 페이지 라우트
 app.get('/signup', (req, res) => {
     res.sendFile(__dirname + '/public/signUp.html');
@@ -116,7 +130,6 @@ app.get('/preferences', isLoggedIn, (req, res) => {
 // 선호도 설정 처리 라우트
 app.post('/preferences', (req, res) => {
     const typesOfFood = req.body.typesOfFood;
-
     switch (typesOfFood) {
         case "한식":
             req.session.foodPreference = "한식";
@@ -260,11 +273,10 @@ async function searchRestaurants(latitude, longitude, foodPreference) {
 
         const response = await axios.get('https://openapi.naver.com/v1/search/local.json?' + queryString, {
             headers: {
-                'X-Naver-Client-Id': 'pj0FaM2XLnRFtWbx7M3u',
-                'X-Naver-Client-Secret': 'aQp9GhMRWe'
+                'X-Naver-Client-Id': clientId,
+                'X-Naver-Client-Secret': clientSecret
             }
         });
-        console.log(response.data.items);
 
         // 중복 선택된 음식점을 피하고 선택된 음식점을 추가
         response.data.items.forEach((restaurant, index) => {
@@ -288,7 +300,7 @@ async function searchRestaurants(latitude, longitude, foodPreference) {
                 finalSelection.push(randomIndex);
             }
         }
-
+        console.log(finalSelection.map(index => selectedRestaurants[index]));
         return finalSelection.map(index => selectedRestaurants[index]);
     } catch (error) {
         console.error('Error searching restaurants:', error);
@@ -302,13 +314,10 @@ async function reverseGeocoding(latitude, longitude) {
     try {
         const response = await axios.get(apiUrl, {
             headers: {
-                'X-NCP-APIGW-API-KEY-ID': '6xu9y2eg88',
-                'X-NCP-APIGW-API-KEY': '44FKOOgbXHMB21040XSyz09iTldeOJLjAfN8VDWd'
+                'X-NCP-APIGW-API-KEY-ID': APIKey, 
+                'X-NCP-APIGW-API-KEY': APIKeySecret
             }
         });
-
-        // API 응답 데이터 확인
-        console.log('API response:', response.data);
 
         // 정상적으로 주소를 가져왔을 때 반환
         if (response.data.results && response.data.results.length > 0) {

@@ -11,8 +11,9 @@
             height: 800px;
             /* 지도의 높이 설정 */
         }
+
         .info-window {
-            position:absolute;
+            position: absolute;
             padding: 10px;
             background-color: #fff;
             border: 1px solid #ccc;
@@ -48,9 +49,21 @@
 <body>
     <h1>한식 맛집 추천</h1>
     <div id="map"></div>
-    <script type="text/javascript"
-        src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=<%= ncpClientId %>&submodules=geocoder"></script>
     <script>
+        fetch('/env')
+            .then(response => response.json())
+            .then(data => {
+                const { ncpClientId } = data;
+                const naverMapsUrl = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${ncpClientId}&submodules=geocoder`;
+                loadScript(naverMapsUrl);
+            })
+            .catch(error => console.error('Error fetching environment variables:', error));
+
+        function loadScript(url) {
+            const script = document.createElement('script');
+            script.src = url;
+            document.head.appendChild(script);
+        }
         // 주변 음식점을 검색하여 화면에 표시하는 함수
         function searchRestaurants(latitude, longitude) {
             // 음식점 검색 API 호출
@@ -63,7 +76,6 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); // 받은 데이터를 콘솔에 출력
                     if (data && data.length > 0) {
                         initMap(latitude, longitude, data); // 맵 초기화 및 음식점 마커 추가
                     } else {
@@ -96,7 +108,14 @@
                 const latLng = new naver.maps.LatLng(lat, lng);
                 const marker = new naver.maps.Marker({
                     position: latLng,
-                    map: map
+                    map: map,
+                    position: latLng,
+                    map: map,
+                    icon: {
+                        content: '<div style="width: 20px; height: 20px; background-color: red; border-radius: 50%;"></div>',
+                        size: new naver.maps.Size(20, 20),
+                        anchor: new naver.maps.Point(10, 10)
+                    }
                 });
 
                 // 마커 클릭 시 정보 표시 (예: 음식점 이름과 네이버로 이동 버튼)
