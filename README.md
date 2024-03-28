@@ -1,7 +1,9 @@
 # Random Food Travel!! (2024.03.14 ~ )
 간단하게 웹서비스를 만들어보기.
 
-웹사이트 도메인: RandFoodTravel.ap-northeast-2.elasticbeanstalk.com 
+웹사이트 도메인
+CloudType : https://port-0-randfoodtravel-fi1xh2bltyeh2cq.sel5.cloudtype.app/
+AWS : RandFoodTravel.ap-northeast-2.elasticbeanstalk.com 
 
 사용 언어: Node.JS, HTML
 
