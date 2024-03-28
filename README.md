@@ -3,9 +3,9 @@
 
 웹사이트 도메인
 
-CloudType : https://port-0-randfoodtravel-fi1xh2bltyeh2cq.sel5.cloudtype.app/
+CloudType : <https://port-0-randfoodtravel-fi1xh2bltyeh2cq.sel5.cloudtype.app/>
 
-AWS : RandFoodTravel.ap-northeast-2.elasticbeanstalk.com 
+AWS Elastic Beanstalk: <RandFoodTravel.ap-northeast-2.elasticbeanstalk.com>
 
 사용 언어: Node.JS, HTML
 
