@@ -7,7 +7,7 @@
 
 배포 서비스: AWS Elastic Beanstalk
 
-DB: MongoDB
+데이터베이스: MongoDB
 
 
 AWS Elastic Beanstalk를 사용한 이유는 EC2를 사용해서 배포를 해도 되었지만 EC2는 관리해야하는 것이 많고 만들다가 잘못 건들면 과금과 오류가 발생할 수 있다 들어 배포를 자동으로 해주는 AWS Elastic Beanstalk를 사용해서 배포를 하였다.
