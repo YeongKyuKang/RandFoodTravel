@@ -5,7 +5,7 @@
 
 CloudType : <https://port-0-randfoodtravel-fi1xh2bltyeh2cq.sel5.cloudtype.app/>
 
-AWS Elastic Beanstalk: <http://RandFoodTravel.ap-northeast-2.elasticbeanstalk.com>
+AWS Elastic Beanstalk: <https://RandFoodTravel.ap-northeast-2.elasticbeanstalk.com>
 
 사용 언어: Node.JS, HTML
 
