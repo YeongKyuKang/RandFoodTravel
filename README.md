@@ -26,3 +26,5 @@ AWS Elastic Beanstalk: <http://RandFoodTravel.ap-northeast-2.elasticbeanstalk.co
 
 배포까지는 되었으나 https가 아닌 http로 사이트 접근이 되어 geolocation API가 사용되지 않는 오류를 발견했다. aws 서비스에서 https를 자동으로 리다이렉션하려면 Route53을 사용해 진행해야 하는데 현재 DNS를 갖고 있지 않아 Freenom이란 사이트를 사용해 DNS를 받아와 진행하려 했으나 현재 새로운 DNS는 제공하지 않는다는 공지로 인해 진행이 더이상 되지 않는다.
 
+2024.04.02
+현재 배포가 된 상태에서 아직 https로 변경을 진행하지 못해 제대로 서비스를 못하고 있는 상호아에서 route53에서 돈이 과금된 것을 확인하였다. AWS Elastics Beanstalk 간편한 대신 요금이 나온다는 얘기를 들었는데 이렇게 되는 것을 알게 되어 일단 서비스를 terminate해놓았다.
