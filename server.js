@@ -11,7 +11,8 @@ const querystring = require('querystring');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 300022222;
+const PORT = process.env.PORT || 3000123123231;
+
 // MongoDB 연결
 // MongoDB 연결
 const mongoURI = process.env.mongodbURI;
