@@ -16,21 +16,10 @@ const PORT = process.env.PORT || 3000;
 // MongoDB 연결
 // MongoDB 연결
 const mongoURI = process.env.mongodbURI;
-/*
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB에 연결되었습니다아.'))
-    .catch(err => console.error('MongoDB 연결 오류:', err));*/
+    .catch(err => console.error('MongoDB 연결 오류:', err));
 // 미들웨어 설정
-// MongoDB 연결 함수
-const connectDB = async () => {
-    try {
-      await mongoose.connect(mongoDBURI);
-      console.log('MongoDB에 연결되었습니다.');
-    } catch (err) {
-      console.error('MongoDB 연결 오류:', err);
-      process.exit(1);
-    }
-  };
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors());// 모든 출처의 요청을 허용하는 CORS 설정
@@ -343,7 +332,7 @@ async function reverseGeocoding(latitude, longitude) {
         throw error;
     }
 }
-/*
+
 if (require.main === module) {
     app.listen(PORT, () => {
       console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
@@ -351,18 +340,3 @@ if (require.main === module) {
   }
 
 module.exports = app;
-*/
-// 서버 시작 함수
-const startServer = async () => {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-    });
-  };
-  
-  // 테스트 환경이 아닐 때만 서버 시작
-  if (process.env.NODE_ENV !== 'test') {
-    startServer();
-  }
-  
-  module.exports = { app, connectDB };
