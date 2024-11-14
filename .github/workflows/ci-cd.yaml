@@ -30,7 +30,13 @@ jobs:
         APIKeySecret: ${{ secrets.API_KEY_SECRET }}
 
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
+      run: |
+        docker build \
+          --build-arg CLIENT_ID=${{ secrets.CLIENT_ID }} \
+          --build-arg CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} \
+          --build-arg API_KEY=${{ secrets.API_KEY }} \
+          --build-arg API_KEY_SECRET=${{ secrets.API_KEY_SECRET }} \
+          -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
