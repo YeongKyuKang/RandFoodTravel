@@ -333,8 +333,10 @@ async function reverseGeocoding(latitude, longitude) {
     }
 }
 
-const server = app.listen(PORT, () => {
-    console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+      console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+    });
+  }
 
-module.exports = server;
+module.exports = app;
