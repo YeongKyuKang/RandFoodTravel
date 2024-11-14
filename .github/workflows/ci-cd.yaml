@@ -24,20 +24,18 @@ jobs:
     - name: Run tests
       run: npm test
       env:
-        mongodbURI: ${{ secrets.mongodbURI }}
-        clientId: ${{ secrets.clientID }}
-        clientSecret: ${{ secrets.clientSecret }}
-        APIKey: ${{ secrets.APIKey }}
-        APIKeySecret: ${{ secrets.APIKeySecret }}
+        clientId: ${{ secrets.CLIENT_ID }}
+        clientSecret: ${{ secrets.CLIENT_SECRET }}
+        APIKey: ${{ secrets.API_KEY }}
+        APIKeySecret: ${{ secrets.API_KEY_SECRET }}
 
     - name: Build Docker image
       run: |
         docker build \
-          --build-arg mongodbURI: ${{ secrets.mongodbURI }} \
-          --build-arg clientId: ${{ secrets.clientID }} \
-          --build-arg clientSecret: ${{ secrets.clientSecret }} \
-          --build-arg APIKey: ${{ secrets.APIKey }} \
-          --build-arg APIKeySecret: ${{ secrets.APIKeySecret }} \
+          --build-arg CLIENT_ID=${{ secrets.CLIENT_ID }} \
+          --build-arg CLIENT_SECRET=${{ secrets.CLIENT_SECRET }} \
+          --build-arg API_KEY=${{ secrets.API_KEY }} \
+          --build-arg API_KEY_SECRET=${{ secrets.API_KEY_SECRET }} \
           -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
 
     - name: Log in to Docker Hub
