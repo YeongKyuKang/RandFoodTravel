@@ -14,8 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // MongoDB 연결
-// MongoDB 연결
-const mongoURI = process.env.mongodbURI;
+const mongoURI = process.env.MONGODBURI;
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB에 연결되었습니다.'))
     .catch(err => console.error('MongoDB 연결 오류:', err));
@@ -43,10 +42,10 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 //환경변수
-const clientId = process.env.clientId;
-const clientSecret = process.env.clientSecret;
-const APIKey = process.env.APIKey;
-const APIKeySecret = process.env.APIKeySecret;
+const clientId = process.env.CLIENTID;
+const clientSecret = process.env.CLIENTSECRET;
+const APIKey = process.env.APIKEY;
+const APIKeySecret = process.env.APIKEYSECRET;
 
 // 세션을 확인하여 로그인되지 않은 사용자에게 /invalidAccess로 리디렉션
 function isLoggedIn(req, res, next) {
@@ -333,6 +332,9 @@ async function reverseGeocoding(latitude, longitude) {
     }
 }
 
-app.listen(PORT, () => {
-    console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+      console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+    });
+  }
+  module.exports = app;
