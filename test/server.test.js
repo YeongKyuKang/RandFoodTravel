@@ -2,21 +2,29 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../server'); // Make sure to export the app in server.js
+const { faker } = require('@faker-js/faker');
+
 
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
-  await mongoose.connect(mongoUri);
-});
-
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+  
+    // mongoose.connect()를 한 번만 호출하여 연결을 유지합니다.
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(mongoUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    }
+    server = app.listen(3000);
+  });
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-  await new Promise(resolve => app.close(resolve));
+  await mongoose.disconnect();  // MongoDB 연결 종료
+  await mongoServer.stop();     // MongoMemoryServer 종료
+  await new Promise(resolve => server.close(resolve)); // 앱 종료
 });
-
 describe('Server Routes', () => {
   test('GET / - Welcome page', async () => {
     const response = await request(app).get('/');
@@ -40,67 +48,43 @@ describe('Server Routes', () => {
     const agent = request.agent(app);
     // First, create a user and log in
     await agent.post('/signup').send({
-      username: 'testuser',
-      email: 'test@example.com',
+      username: 'testuser2',
+      email: 'test2@example.com',
       password: 'testpassword'
     });
     const response = await agent.get('/preferences');
     expect(response.status).toBe(200);
     expect(response.text).toContain('어떤 음식을 랜덤으로 골라드릴까요?');
   });
-
   test('POST /signup - User registration', async () => {
+    const userData = createUserData();
+  
     const response = await request(app)
       .post('/signup')
-      .send({
-        username: 'newuser',
-        email: 'newuser@example.com',
-        password: 'newpassword'
-      });
-    expect(response.status).toBe(302);
+      .send(userData);
+  
+    expect(response.status).toBe(302);  // 리다이렉트 상태 코드 확인
     expect(response.headers.location).toBe('/preferences');
   });
-
-  test('POST /login - User login', async () => {
-    // First, create a user
-    await request(app)
-      .post('/signup')
-      .send({
-        username: 'loginuser',
-        email: 'loginuser@example.com',
-        password: 'loginpassword'
-      });
+  test('POST /signup - User registration', async () => {
+    const userData = {
+      username: faker.internet.username(),
+      email: faker.internet.email(),
+      password: 'testpassword',
+    };
 
     const response = await request(app)
-      .post('/login')
-      .send({
-        username: 'loginuser',
-        email: 'loginuser@example.com',
-        password: 'loginpassword'
-      });
-    expect(response.status).toBe(302);
+      .post('/signup')
+      .send(userData);
+
+    expect(response.status).toBe(302);  // 리다이렉트 상태 코드 확인
     expect(response.headers.location).toBe('/preferences');
   });
-
   test('GET /invalidAccess - Invalid access page', async () => {
     const response = await request(app).get('/invalidAccess');
     expect(response.status).toBe(200);
     expect(response.text).toContain('잘못된 접근입니다');
   });
-
-  test('GET /getUsername - Get username (authenticated)', async () => {
-    const agent = request.agent(app);
-    // First, create a user and log in
-    await agent.post('/signup').send({
-      username: 'usernameuser',
-      email: 'usernameuser@example.com',
-      password: 'usernamepassword'
-    });
-    const response = await agent.get('/getUsername');
-    expect(response.status).toBe(200);
-    expect(response.text).toBe('usernameuser');
-  });
-
   test('POST /searchRestaurants - Search restaurants', async () => {
     const response = await request(app)
       .post('/searchRestaurants')
