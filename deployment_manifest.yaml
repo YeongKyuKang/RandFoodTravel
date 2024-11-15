@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: RandFoodTravelContainer
+spec:
+  replicas: 5 # Pod 증식 수
+  selector:
+    matchLabels:
+      app: RandFoodTravelContainer
+  template:
+    metadata:
+      labels:
+        app: RandFoodTravelContainer
+    spec:
+      containers:
+      - name: RandFoodTravelContainer
+        image: kyk000306/node-web-app:db5b3ae579f88e0475c8b92e00bf25796fa97ae3
+        ports:
+        - containerPort: 80
