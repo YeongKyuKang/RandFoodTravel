@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // MongoDB 연결
 const mongoURI = process.env.MONGODBURI;
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
     .then(() => console.log('MongoDB에 연결되었습니다.'))
     .catch(err => console.error('MongoDB 연결 오류:', err));
 // 미들웨어 설정
