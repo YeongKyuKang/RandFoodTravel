@@ -47,24 +47,15 @@ describe('Server Routes', () => {
   test('GET /preferences - Preferences page (authenticated)', async () => {
     const agent = request.agent(app);
     // First, create a user and log in
-    await agent.post('/signup').send({
-      username: 'testuser2',
-      email: 'test2@example.com',
-      password: 'testpassword'
-    });
+    const userData = {
+      username: faker.internet.username(),
+      email: faker.internet.email(),
+      password: 'testpassword',
+    };
+    await agent.post('/signup').send(userData);
     const response = await agent.get('/preferences');
     expect(response.status).toBe(200);
     expect(response.text).toContain('어떤 음식을 랜덤으로 골라드릴까요?');
-  });
-  test('POST /signup - User registration', async () => {
-    const userData = createUserData();
-  
-    const response = await request(app)
-      .post('/signup')
-      .send(userData);
-  
-    expect(response.status).toBe(302);  // 리다이렉트 상태 코드 확인
-    expect(response.headers.location).toBe('/preferences');
   });
   test('POST /signup - User registration', async () => {
     const userData = {
