@@ -42,7 +42,13 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
+        docker build \
+          --build-arg MONGODBURI=${{ secrets.MONGODBURI }} \
+          --build-arg CLIENTID=${{ secrets.CLIENTID }} \
+          --build-arg CLIENTSECRET=${{ secrets.CLIENTSECRET }} \
+          --build-arg APIKEY=${{ secrets.APIKEY }} \
+          --build-arg APIKEYSECRET=${{ secrets.APIKEYSECRET }} \
+          -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }}
