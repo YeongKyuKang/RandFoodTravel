@@ -42,9 +42,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build --build-arg MONGODBURI="${{ secrets.MONGODBURI }}" \
-          -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }}
-          .
+        docker build --build-arg MONGODBURI="${{ secrets.MONGODBURI }}" -t ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }} .
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/node-web-app:${{ github.sha }}
