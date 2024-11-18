@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: randfoodtravel-container
 spec:
-  replicas: 5 # Pod 증식 수
+  replicas: 5
   selector:
     matchLabels:
       app: randfoodtravel
@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: randfoodtravel-container
-        image: kyk000306/node-web-app:db5b3ae579f88e0475c8b92e00bf25796fa97ae3
+        image: kyk000306/node-web-app:latest # 기본값 설정
         ports:
         - containerPort: 80
