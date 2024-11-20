@@ -16,4 +16,4 @@ spec:
       - name: randfoodtravel-container
         image: kyk000306/node-web-app:latest # 기본값 설정
         ports:
-        - containerPort: 80
+        - containerPort: 3000
