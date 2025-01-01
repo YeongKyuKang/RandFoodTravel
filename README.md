@@ -1,12 +1,6 @@
 # Random Food Travel!! (2024.03.14 ~ )
 간단하게 웹서비스를 만들어보기.
 
-웹사이트 도메인
-
-CloudType : <https://port-0-randfoodtravel-fi1xh2bltyeh2cq.sel5.cloudtype.app/>
-
-AWS Elastic Beanstalk: <http://RandFoodTravel.ap-northeast-2.elasticbeanstalk.com>
-
 사용 언어: Node.JS, HTML
 
 배포 서비스: AWS Elastic Beanstalk
@@ -28,3 +22,7 @@ AWS Elastic Beanstalk: <http://RandFoodTravel.ap-northeast-2.elasticbeanstalk.co
 
 2024.04.02
 현재 배포가 된 상태에서 아직 https로 변경을 진행하지 못해 제대로 서비스를 못하고 있는 상호아에서 route53에서 돈이 과금된 것을 확인하였다. AWS Elastics Beanstalk 간편한 대신 요금이 나온다는 얘기를 들었는데 이렇게 되는 것을 알게 되어 일단 서비스를 terminate해놓았다.
+
+2024.10.10
+솔데스크에서 클라우드 교육 과정을 듣던 중 쿠버네티스에 대해 알게 되었고 CI/CD에 대한 내용을 찾아볼 수 있게 되어 이 프로젝트에 적용해보았다.
+
