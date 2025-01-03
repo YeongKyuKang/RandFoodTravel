@@ -1,4 +1,4 @@
-# Random Food Travel!! (2024.03.14 ~ 2024.03.28)
+# Random Food Travel
 간단하게 웹서비스를 만들어보기.
 
 사용 언어: Node.JS, HTML
