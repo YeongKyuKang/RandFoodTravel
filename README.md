@@ -1,7 +1,7 @@
 # Random Food Travel
 간단하게 웹서비스를 만들어보기.
 
-사용 언어: Node.JS, HTML
+사용 언어: Node.JS, HTML, ArgoCD, Github Action, EC2, Route53
 
 배포 서비스: CloudType
 
